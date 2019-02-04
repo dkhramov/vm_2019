@@ -1,0 +1,28 @@
+clear all; clc;
+
+nx=800; % должно делиться на 2
+nt=400; 
+ 
+z = zeros(nt,nx); 
+C = z; 
+c = zeros(1,nx);
+
+c(nx/2) = 1; 
+C(1,:) = c;
+ 
+imh = image(cat(3,z,C,C)); 
+set(imh, 'erasemode', 'none') 
+axis equal 
+axis tight 
+
+x = 2:nx-1;
+
+for t=2:nt
+    C(t,x) = (c(x-1)==1 & c(x)==0 & c(x+1)==0) | ...
+    (c(x-1)==0 & c(x)==1 & c(x+1)==1) | ...
+    (c(x-1)==0 & c(x)==1 & c(x+1)==0) | ...
+    (c(x-1)==0 & c(x)==0 & c(x+1)==1); % chaos - rule 30
+    set(imh, 'cdata', cat(3,z,C,C) ) 
+    drawnow 
+    c = C(t,:);
+end
